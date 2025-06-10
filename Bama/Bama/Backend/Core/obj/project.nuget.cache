@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "YQuhGlHWov4=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\antho\\Desktop\\Bama\\backend\\Core\\Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\antho\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\antho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
