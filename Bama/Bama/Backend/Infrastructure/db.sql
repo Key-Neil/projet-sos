@@ -56,8 +56,8 @@ INSERT IGNORE INTO Customer (Username, PasswordHash) VALUES
 
 INSERT INTO Burger (Name, Description, Price, Stock, ImageUrl)
 VALUES
-('Cheeseburger', 'Burger avec cheddar et steak', 6.99, 50, 'https://example.com/cheeseburger.jpg'),
-('Bacon Burger', 'Burger avec bacon croustillant', 7.49, 40, 'https://example.com/baconburger.jpg'),
-('Veggie Burger', 'Burger végétarien au tofu', 5.99, 30, 'https://example.com/veggieburger.jpg'),
-('Double Beef Burger', 'Double steak, double fromage', 8.99, 25, 'https://example.com/doublebeef.jpg'),
-('Chicken Burger', 'Burger au poulet grillé', 6.49, 35, 'https://example.com/chickenburger.jpg');
+('Cheeseburger', 'Burger avec cheddar et steak', 6.99, 50, 'assets/images/hamburgers.jpg'),
+('Bacon Burger', 'Burger avec bacon croustillant', 7.49, 40, 'assets/images/hamburgers.jpg'),
+('Veggie Burger', 'Burger végétarien au tofu', 5.99, 30, 'assets/images/hamburgers.jpg'),
+('Double Beef Burger', 'Double steak, double fromage', 8.99, 25, 'assets/images/hamburgers.jpg'),
+('Chicken Burger', 'Burger au poulet grillé', 6.49, 35, 'assets/images/hamburgers.jpg');

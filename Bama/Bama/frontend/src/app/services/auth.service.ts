@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common'; // On importe cette fonction utilitaire
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -8,13 +9,17 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   private apiUrl = 'http://localhost:5218/api/customers';
 
-  constructor(private http: HttpClient) { }
+  // On injecte PLATFORM_ID pour savoir où s'exécute le code (serveur ou navigateur)
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth`, credentials).pipe(
       tap((response: any) => {
-        // Si la connexion réussit, on stocke le token
-        if (response.token) {
+        // On ne stocke le token que si on est dans un navigateur
+        if (isPlatformBrowser(this.platformId) && response.token) {
           localStorage.setItem('authToken', response.token);
         }
       })
@@ -25,18 +30,26 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, userInfo);
   }
 
-  // Méthode pour se déconnecter
   logout(): void {
-    localStorage.removeItem('authToken');
+    // On ne modifie le localStorage que si on est dans un navigateur
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('authToken');
+    }
   }
 
-  // Méthode pour récupérer le token
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    // On ne lit le localStorage que si on est dans un navigateur
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('authToken');
+    }
+    return null; // Sur le serveur, on retourne null
   }
 
-  // Méthode pour savoir si l'utilisateur est connecté
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    // On ne vérifie que si on est dans un navigateur
+    if (isPlatformBrowser(this.platformId)) {
+      return this.getToken() !== null;
+    }
+    return false; // Sur le serveur, l'utilisateur n'est jamais "connecté"
   }
 }

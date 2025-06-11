@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Module pour les formulaires
-import { Router } from '@angular/router'; // Pour la redirection
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule], // On importe FormsModule
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  // Modèle pour stocker les données du formulaire
   loginData = {
     username: '',
     password: ''
@@ -24,10 +23,10 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe({
       next: () => {
         alert('Connexion réussie !');
-        this.router.navigate(['/']); // On redirige vers la page d'accueil
+        this.router.navigate(['/']); // Redirection vers l'accueil
       },
       error: (err) => {
-        alert(`Erreur de connexion : ${err.error?.message || 'Identifiants incorrects'}`);
+        alert(`Erreur de connexion : Identifiants incorrects ou problème serveur.`);
       }
     });
   }

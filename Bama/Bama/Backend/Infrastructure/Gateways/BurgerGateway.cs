@@ -14,30 +14,19 @@ public class BurgerGateway : IBurgerGateway
         _burgerRepository = burgerRepository;
     }
 
-    public IEnumerable<Core.Models.Burger> GetAllBurgers()
+   public IEnumerable<Core.Models.Burger> GetAllBurgers()
+{
+    var infraBurgers = _burgerRepository.GetAllBurgers();
+     return infraBurgers.Select(b => new Core.Models.Burger
     {
-        var infraBurgers = _burgerRepository.GetAllBurgers();
-        var coreBurgers = new List<Core.Models.Burger>();
-
-        foreach (var b in infraBurgers)
-        {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(b.ImageUrl))
-            {
-                imageBase64 = Base64Utils.GetBase64Image(b.ImageUrl);
-            }
-            coreBurgers.Add(new Core.Models.Burger
-            {
-                BurgerId = b.BurgerId,
-                Name = b.Name,
-                Description = b.Description,
-                Price = b.Price,
-                Stock = (int)(b.Stock - _burgerRepository.GetQuantityOfBurgerInOrders(b.BurgerId)),
-                ImageUrl = imageBase64
-            });
-        }
-        return coreBurgers;
-    }
+        BurgerId = b.BurgerId,
+        Name = b.Name,
+        Description = b.Description,
+        Price = b.Price,
+        Stock = (int)(b.Stock - _burgerRepository.GetQuantityOfBurgerInOrders(b.BurgerId)),
+        ImageUrl = b.ImageUrl
+    });
+}
 
     public void AddBurger(Core.Models.Burger burger)
     {
@@ -58,29 +47,23 @@ public class BurgerGateway : IBurgerGateway
     }
 
     public Core.Models.Burger? GetBurgerById(int burgerId)
+{
+    var infraBurger = _burgerRepository.GetBurgerById(burgerId);
+    if (infraBurger == null)
     {
-        var infraBurger = _burgerRepository.GetBurgerById(burgerId);
-        if (infraBurger == null)
-        {
-            return null;
-        }
-
-        string? imageBase64 = null;
-        if (!string.IsNullOrWhiteSpace(infraBurger.ImageUrl))
-        {
-            imageBase64 = Base64Utils.GetBase64Image(infraBurger.ImageUrl);
-        }
-
-        return new Core.Models.Burger
-        {
-            BurgerId = infraBurger.BurgerId,
-            Name = infraBurger.Name,
-            Description = infraBurger.Description,
-            Price = infraBurger.Price,
-            Stock = (int)(infraBurger.Stock - _burgerRepository.GetQuantityOfBurgerInOrders(infraBurger.BurgerId)),
-            ImageUrl = imageBase64
-        };
+        return null;
     }
+
+    return new Core.Models.Burger
+    {
+        BurgerId = infraBurger.BurgerId,
+        Name = infraBurger.Name,
+        Description = infraBurger.Description,
+        Price = infraBurger.Price,
+        Stock = (int)(infraBurger.Stock - _burgerRepository.GetQuantityOfBurgerInOrders(infraBurger.BurgerId)),
+        ImageUrl = infraBurger.ImageUrl
+    };
+}
 
 
 }

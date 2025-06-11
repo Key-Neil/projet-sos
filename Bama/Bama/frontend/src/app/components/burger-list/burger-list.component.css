@@ -37,6 +37,10 @@
 
 .card-content h3 {
   margin-top: 0;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center; /* Centre le titre */
+  font-weight: 500;
   color: #ff6f00; /* Couleur orange pour le titre */
 }
 
@@ -85,4 +89,55 @@ button:hover:not(:disabled) {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+/* ... (le style des cartes burger est déjà là) ... */
+
+/* AJOUTER CE STYLE POUR LE PANIER */
+.cart-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.cart-table th, .cart-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.cart-table th {
+  background-color: #f8f8f8;
+}
+
+.cart-summary {
+  text-align: right;
+}
+
+.cart-summary .cart-actions button {
+  width: auto; /* Pour que les boutons ne prennent pas toute la largeur */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.checkout-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.clear-button {
+  background-color: #dc3545;
+  color: white;
 }

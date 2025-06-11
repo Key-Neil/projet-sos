@@ -1,11 +1,19 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http'; // <-- AJOUTE CET IMPORT
 
-
+// On importe 'withInterceptors'
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration } from '@angular/platform-browser';
+
+// On importe notre nouvel intercepteur
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay()), provideHttpClient()]
+  providers: [
+    provideRouter(routes),
+    provideClientHydration(),
+    // On dit à HttpClient d'utiliser le fetch ET nos intercepteurs
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
+  ]
 };
