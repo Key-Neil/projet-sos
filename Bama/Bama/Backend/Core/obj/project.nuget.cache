@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "YQuhGlHWov4=",
+  "dgSpecHash": "5A0zXcLN3JA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\antho\\Desktop\\Bama\\backend\\Core\\Core.csproj",
+  "projectFilePath": "C:\\Users\\HP\\OneDrive\\Documents\\GitHub\\projet-sos\\Bama\\Bama\\Backend\\Core\\Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\antho\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
-    "C:\\Users\\antho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512"
+    "C:\\Users\\HP\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.5\\microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512"
   ],
   "logs": []
 }

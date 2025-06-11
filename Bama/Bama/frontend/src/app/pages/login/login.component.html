@@ -1,0 +1,14 @@
+<h2>Connexion</h2>
+<form (ngSubmit)="onSubmit()">
+  <div>
+    <label for="username">Nom d'utilisateur :</label>
+    <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required>
+  </div>
+  <div>
+    <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required>
+  </div>
+  <button type="submit">Se connecter</button>
+</form>
+<p>Pas encore inscrit ? <a routerLink="/register">Inscrivez-vous ici</a>.</p>
+<p>Mot de passe oublié ? <a routerLink="/reset-password">Réinitialisez-le ici</a>.</p>

@@ -1,0 +1,11 @@
+<h2>Notre Menu</h2>
+<div *ngIf="burgers.length === 0">
+  <p>Chargement du menu...</p>
+</div>
+
+<div *ngFor="let burger of burgers" class="burger-item">
+  <h3>{{ burger.name }}</h3>
+  <p>{{ burger.description }}</p>
+  <p>Prix : {{ burger.price }} €</p>
+  <p>En stock : {{ burger.stock }}</p>
+</div>

@@ -1,3 +1,6 @@
+-- On supprime l'ancienne base pour être sûr de repartir à zéro
+DROP DATABASE IF EXISTS bama;
+
 -- Create the database if it does not exist
 CREATE DATABASE IF NOT EXISTS bama;
 USE bama;
@@ -5,7 +8,8 @@ USE bama;
 -- Create Customer table if it does not exist
 CREATE TABLE IF NOT EXISTS Customer (
     CustomerId INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(256) NOT NULL UNIQUE,
+    -- MODIFIÉ : La taille a été réduite de 256 à 191 pour éviter l'erreur de clé trop longue.
+    Username VARCHAR(191) NOT NULL UNIQUE,
     PasswordHash TEXT NOT NULL
 );
 
@@ -13,7 +17,8 @@ CREATE TABLE IF NOT EXISTS Customer (
 -- Create Burger table if it does not exist
 CREATE TABLE IF NOT EXISTS Burger (
     BurgerId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL UNIQUE,
+    -- MODIFIÉ : La taille a été réduite de 255 à 191 pour éviter l'erreur de clé trop longue.
+    Name VARCHAR(191) NOT NULL UNIQUE,
     Description TEXT,
     Price DECIMAL(10, 2) NOT NULL,
     Stock INT UNSIGNED DEFAULT 0,
