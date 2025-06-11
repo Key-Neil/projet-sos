@@ -1,11 +1,28 @@
-<h2>Notre Menu</h2>
-<div *ngIf="burgers.length === 0">
-  <p>Chargement du menu...</p>
-</div>
+<div class="menu-container">
+  <h2>Notre Menu</h2>
 
-<div *ngFor="let burger of burgers" class="burger-item">
-  <h3>{{ burger.name }}</h3>
-  <p>{{ burger.description }}</p>
-  <p>Prix : {{ burger.price }} €</p>
-  <p>En stock : {{ burger.stock }}</p>
+  <div *ngIf="burgers.length === 0" class="loading-message">
+    <p>Chargement du menu...</p>
+  </div>
+
+  <div class="burger-grid">
+    <div class="burger-card" *ngFor="let burger of burgers">
+
+      <div class="card-content">
+        <h3>{{ burger.name }}</h3>
+        <p class="description">{{ burger.description }}</p>
+        <p class="price">{{ burger.price }} €</p>
+      </div>
+
+      <div class="card-actions">
+         <p class="stock" [class.no-stock]="burger.stock === 0">
+            {{ burger.stock > 0 ? 'En stock : ' + burger.stock : 'En rupture de stock' }}
+         </p>
+         <button (click)="addToCart(burger)" [disabled]="burger.stock === 0">
+            Ajouter au panier
+         </button>
+      </div>
+
+    </div>
+  </div>
 </div>

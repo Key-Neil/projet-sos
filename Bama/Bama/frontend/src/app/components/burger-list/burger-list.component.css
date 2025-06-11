@@ -1,42 +1,88 @@
-h2 {
-  color: #333;
+.menu-container {
+  padding: 20px;
+}
+
+.menu-container h2 {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 2em;
+  margin-bottom: 30px;
+  color: #333;
 }
 
-form {
+.burger-grid {
+  display: grid;
+  /* Crée des colonnes qui s'adaptent à la taille de l'écran */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px; /* Espace entre les cartes */
+}
+
+.burger-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
   display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  margin: 0 auto;
+  flex-direction: column; /* Organise le contenu en colonne */
+  transition: transform 0.2s;
 }
 
-label {
-  margin-bottom: 5px;
+.burger-card:hover {
+  transform: translateY(-5px); /* Effet de lévitation au survol */
 }
 
-input {
-  margin-bottom: 15px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.card-content {
+  padding: 15px;
+  flex-grow: 1; /* Pousse les actions en bas */
+}
+
+.card-content h3 {
+  margin-top: 0;
+  color: #ff6f00; /* Couleur orange pour le titre */
+}
+
+.description {
+  font-size: 0.9em;
+  color: #666;
+  min-height: 40px; /* Assure une hauteur minimale pour l'alignement */
+}
+
+.price {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.card-actions {
+  padding: 0 15px 15px 15px;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+}
+
+.stock {
+    font-size: 0.8em;
+    color: #28a745;
+}
+
+.stock.no-stock {
+    color: #dc3545;
 }
 
 button {
-  padding: 10px;
-  background-color: #28a745;
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  background-color: #ff6f00;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-button:hover {
-  background-color: #218838;
+button:hover:not(:disabled) {
+  background-color: #e65c00;
 }
 
-h3 {
-  color: #555;
-  text-align: center;
-  margin-bottom: 10px;
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

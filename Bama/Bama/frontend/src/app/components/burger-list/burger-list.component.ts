@@ -20,4 +20,10 @@ export class BurgerListComponent implements OnInit {
       this.burgers = data; // On remplit notre liste avec les données reçues
     });
   }
+  // Méthode pour ajouter un burger au panier (à implémenter)
+  addToCart(burger: Burger): void {
+    // Ici, on pourrait appeler un service de panier pour ajouter le burger
+    console.log(`Ajout du burger ${burger.name} au panier`);
+    // Par exemple, on pourrait utiliser un service de panier pour gérer l'ajout
+  }
 }
