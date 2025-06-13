@@ -16,7 +16,8 @@ public class CustomerRepository(IConfiguration configuration) : ICustomerReposit
 
     public Customer? GetCustomerByUsername(string username)
     {
-        const string sql = "SELECT CustomerId, Username, PasswordHash FROM customer WHERE Username = @Username;";
+        // MODIFICATION : On sélectionne toutes les colonnes avec '*'
+        const string sql = "SELECT * FROM customer WHERE Username = @Username;";
         using var connection = CreateConnection();
         return connection.QuerySingleOrDefault<Customer?>(sql, new { Username = username });
     }
@@ -25,30 +26,26 @@ public class CustomerRepository(IConfiguration configuration) : ICustomerReposit
     {
         const string sql = "INSERT INTO customer (Username, PasswordHash) VALUES (@Username, @PasswordHash);";
         using var connection = CreateConnection();
-        connection.Execute(sql, new
-        {
-            customer.Username,
-            customer.PasswordHash,
-        });
+        connection.Execute(sql, customer);
     }
 
     public IEnumerable<Customer> GetAllCustomers()
     {
-        const string sql = "SELECT * FROM customer WHERE Username = @Username;";
+        const string sql = "SELECT * FROM customer;";
         using var connection = CreateConnection();
         return connection.Query<Customer>(sql);
     }
 
+    // MÉTHODE AJOUTÉE
     public void UpdateCustomer(Customer customer)
-{
-    const string sql = @"UPDATE customer SET 
-                            FirstName = @FirstName, 
-                            LastName = @LastName, 
-                            Email = @Email, 
-                            PhoneNumber = @PhoneNumber 
-                         WHERE CustomerId = @CustomerId;";
-    using var connection = CreateConnection();
-    connection.Execute(sql, customer);
-}
-
+    {
+        const string sql = @"UPDATE customer SET 
+                                FirstName = @FirstName, 
+                                LastName = @LastName, 
+                                Email = @Email, 
+                                PhoneNumber = @PhoneNumber 
+                             WHERE CustomerId = @CustomerId;";
+        using var connection = CreateConnection();
+        connection.Execute(sql, customer);
+    }
 }

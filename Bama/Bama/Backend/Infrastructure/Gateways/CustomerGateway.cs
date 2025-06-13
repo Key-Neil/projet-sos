@@ -1,5 +1,4 @@
 using Core.IGateways;
-using Infrastructure.Models;
 using Infrastructure.Repositories.Abstractions;
 
 namespace Infrastructure.Gateways;
@@ -13,23 +12,19 @@ public class CustomerGateway : ICustomerGateway
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
-    /// <summary>
-    /// Ajoute un nouveau client dans la base de données avec mot de passe hashé
-    /// </summary>
+    // ... les méthodes AddCustomer et GetCustomerPasswordHash ne changent pas ...
     public void AddCustomer(string username, string passwordHash)
     {
-        var customer = new Customer
-        {
-            Username = username,
-            PasswordHash = passwordHash
-        };
-
+        var customer = new Infrastructure.Models.Customer { Username = username, PasswordHash = passwordHash };
         _customerRepository.AddCustomer(customer);
     }
 
-    /// <summary>
-    /// Récupère tous les clients (version "métier")
-    /// </summary>
+    public string? GetCustomerPasswordHash(string username)
+    {
+        var customer = _customerRepository.GetCustomerByUsername(username);
+        return customer?.PasswordHash;
+    }
+
     public IEnumerable<Core.Models.Customer> GetAllCustomers()
     {
         var customers = _customerRepository.GetAllCustomers();
@@ -37,26 +32,15 @@ public class CustomerGateway : ICustomerGateway
         {
             CustomerId = customer.CustomerId,
             Username = customer.Username,
-            PasswordHash = customer.PasswordHash,
             FirstName = customer.FirstName,
             LastName = customer.LastName,
             Email = customer.Email,
-            PhoneNumber = customer.PhoneNumber
+            PhoneNumber = customer.PhoneNumber,
+            Role = customer.Role,
+            PasswordHash = customer.PasswordHash
         });
     }
 
-    /// <summary>
-    /// Récupère uniquement le hash du mot de passe d'un utilisateur (authentification)
-    /// </summary>
-    public string? GetCustomerPasswordHash(string username)
-    {
-        var customer = _customerRepository.GetCustomerByUsername(username);
-        return customer?.PasswordHash;
-    }
-
-    /// <summary>
-    /// Récupère un utilisateur complet à partir de son nom d’utilisateur
-    /// </summary>
     public Core.Models.Customer? GetCustomerByUsername(string username)
     {
         var infraCustomer = _customerRepository.GetCustomerByUsername(username);
@@ -66,31 +50,28 @@ public class CustomerGateway : ICustomerGateway
         {
             CustomerId = infraCustomer.CustomerId,
             Username = infraCustomer.Username,
-            PasswordHash = infraCustomer.PasswordHash,
             FirstName = infraCustomer.FirstName,
             LastName = infraCustomer.LastName,
             Email = infraCustomer.Email,
-            PhoneNumber = infraCustomer.PhoneNumber
+            PhoneNumber = infraCustomer.PhoneNumber,
+            Role = infraCustomer.Role,
+            PasswordHash = infraCustomer.PasswordHash
         };
     }
 
-    /// <summary>
-    /// Met à jour les informations personnelles d’un client (sauf le mot de passe ici)
-    /// </summary>
     public void UpdateCustomer(Core.Models.Customer customer)
     {
-        var infraCustomer = new Infrastructure.Models.Customer
+        var existingCustomer = _customerRepository.GetCustomerByUsername(customer.Username);
+        if (existingCustomer == null)
         {
-            CustomerId = customer.CustomerId,
-            Username = customer.Username,
-            // ⚠️ On ignore le mot de passe ici volontairement pour ne pas l’écraser
-            PasswordHash = "", 
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Email = customer.Email,
-            PhoneNumber = customer.PhoneNumber
-        };
+            return;
+        }
 
-        _customerRepository.UpdateCustomer(infraCustomer);
+        existingCustomer.FirstName = customer.FirstName;
+        existingCustomer.LastName = customer.LastName;
+        existingCustomer.Email = customer.Email;
+        existingCustomer.PhoneNumber = customer.PhoneNumber;
+
+        _customerRepository.UpdateCustomer(existingCustomer);
     }
 }

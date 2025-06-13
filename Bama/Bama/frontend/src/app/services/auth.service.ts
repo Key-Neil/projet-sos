@@ -52,4 +52,28 @@ export class AuthService {
     }
     return false; // Sur le serveur, l'utilisateur n'est jamais "connecté"
   }
+
+    // Récupère les informations du profil de l'utilisateur connecté
+  getUserProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/me`);
+  }
+
+  // Met à jour les informations du profil
+  updateUserProfile(profileData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/me`, profileData);
+  }
+
+  /*// Méthode pour vérifier si l'utilisateur est un administrateur
+  isAdmin(): boolean {
+    // On vérifie si on est dans un navigateur avant d'accéder au localStorage
+    if (isPlatformBrowser(this.platformId)) {
+      const token = this.getToken();
+      if (token) {
+        // On décode le token JWT pour vérifier les rôles
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.roles && payload.roles.includes('Admin');
+      }
+    }
+    return false; // Sur le serveur, on retourne false
+  } */
 }
