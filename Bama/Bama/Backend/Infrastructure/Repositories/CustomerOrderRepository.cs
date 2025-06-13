@@ -21,7 +21,8 @@ namespace Infrastructure.Repositories
         public CustomerOrder? GetCustomerOrderByCustomerId(int customerId)
         {
             using var connection = GetConnection();
-            var sql = "SELECT * FROM CustomerOrder WHERE CustomerId = @CustomerId";
+            // On ne récupère que le panier en cours
+            var sql = "SELECT * FROM CustomerOrder WHERE CustomerId = @CustomerId AND Status = 'InProgress'";
             var customerOrder = connection.QuerySingleOrDefault<CustomerOrder>(sql, new { CustomerId = customerId });
 
             if (customerOrder != null)
@@ -36,22 +37,16 @@ namespace Infrastructure.Repositories
         public CustomerOrder CreateCustomerOrder(int customerId)
         {
             using var connection = GetConnection();
-
-            var sql = "INSERT INTO CustomerOrder (CustomerId) VALUES (@CustomerId);";
-
+            var sql = "INSERT INTO CustomerOrder (CustomerId, Status) VALUES (@CustomerId, 'InProgress');";
             connection.Execute(sql, new { CustomerId = customerId });
-
             return GetCustomerOrderByCustomerId(customerId) ?? throw new InvalidOperationException("Failed to create customer order.");
         }
 
         public void AddItemsToCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items)
         {
             using var connection = GetConnection();
-
             connection.Open();
-
             var transaction = connection.BeginTransaction();
-
             try
             {
                 foreach (var item in items)
@@ -66,7 +61,6 @@ namespace Infrastructure.Repositories
                     var sql = "INSERT INTO OrderItem (CustomerOrderId, BurgerId, Quantity, Price) VALUES (@CustomerOrderId, @BurgerId, @Quantity, @Price)";
                     connection.Execute(sql, orderItem, transaction);
                 }
-
                 transaction.Commit();
             }
             catch
@@ -86,27 +80,15 @@ namespace Infrastructure.Repositories
         public void UpdateItemsInCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items)
         {
             using var connection = GetConnection();
-
             connection.Open();
-
             var transaction = connection.BeginTransaction();
-
             try
             {
                 foreach (var item in items)
                 {
-                    var orderItem = new OrderItem
-                    {
-                        OrderItemId = customerOrderId,
-                        BurgerId = item.BurgerId,
-                        Quantity = item.Quantity,
-                        Price = item.Price
-                    };
-                    
                     var sql = "UPDATE OrderItem SET Quantity = @Quantity, Price = @Price WHERE CustomerOrderId = @CustomerOrderId AND BurgerId = @BurgerId";
-                    connection.Execute(sql, orderItem, transaction);
+                    connection.Execute(sql, new { item.Quantity, item.Price, CustomerOrderId = customerOrderId, item.BurgerId }, transaction);
                 }
-
                 transaction.Commit();
             }
             catch
@@ -122,5 +104,12 @@ namespace Infrastructure.Repositories
             var sql = "SELECT * FROM OrderItem WHERE CustomerOrderId = @CustomerOrderId AND BurgerId = @BurgerId";
             return connection.QuerySingleOrDefault<OrderItem>(sql, new { CustomerOrderId = customerOrderId, BurgerId = burgerId });
         }
-    }
-}
+
+        public void UpdateOrderStatus(int customerOrderId, string status)
+        {
+            using var connection = GetConnection();
+            var sql = "UPDATE CustomerOrder SET Status = @Status WHERE CustomerOrderId = @CustomerOrderId";
+            connection.Execute(sql, new { CustomerOrderId = customerOrderId, Status = status });
+        }
+    } // Fin de la classe CustomerOrderRepository
+} // Fin du namespace Infrastructure.Repositories

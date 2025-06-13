@@ -4,6 +4,22 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
+  /* Chemin vers ton image dans le dossier assets */
+  background-image: url('assets/images/fond.jpg');
+
+  /* Fait en sorte que l'image couvre tout l'arrière-plan sans se déformer */
+  background-size: cover;
+
+  /* Centre l'image */
+  background-position: center center;
+
+  /* Empêche l'image de se répéter si elle est trop petite */
+  background-repeat: no-repeat;
+
+  /* Fixe l'image pour qu'elle ne défile pas avec le contenu de la page */
+  background-attachment: fixed;
+
+  /* C'est bien d'avoir une couleur de fond au cas où l'image ne chargerait pas */
   background-color: #f8f9fa;
 }
 h1 {

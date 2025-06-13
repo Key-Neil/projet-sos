@@ -47,3 +47,52 @@ button {
 button:hover {
   background-color: #218838;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+.success-message {
+  color: green;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+.form-footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+.form-footer a:hover {
+  text-decoration: underline;
+}
+.form-footer a:focus {
+  outline: none;
+  color: #0056b3;
+}
+.form-footer a:focus-visible {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
+.form-footer a:focus:not(:focus-visible) {
+  outline: none;
+}
+/* AJOUTER CE BLOC DANS LES DEUX FICHIERS CSS */
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.auth-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}

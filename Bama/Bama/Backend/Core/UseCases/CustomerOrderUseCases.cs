@@ -41,14 +41,14 @@ public class CustomerOrderUseCases : ICustomerOrderUseCases
             {
                 throw new KeyNotFoundException($"Burger with ID {item.Burger.BurgerId} not found.");
             }
-            
+
             if (item.Quantity > burger.Stock)
             {
                 throw new ArgumentException($"Insufficient stock for burger {burger.Name}. Available: {burger.Stock}, Requested: {item.Quantity}.");
             }
         }
 
-        _customerOrderGateway.AddOrUpdateItemsToCustomerOrder(customerOrderId, items);        
+        _customerOrderGateway.AddOrUpdateItemsToCustomerOrder(customerOrderId, items);
     }
 
     public void ClearCustomerOrder(int customerId)
@@ -82,5 +82,31 @@ public class CustomerOrderUseCases : ICustomerOrderUseCases
         }
 
         return customerOrder;
+    }
+   public void FinalizeOrder(int customerId)
+    {
+    // 1. On récupère la commande en cours
+    var customerOrder = _customerOrderGateway.GetCustomerOrderByCustomerId(customerId);
+    if (customerOrder == null || !customerOrder.OrderItems.Any())
+    {
+        throw new InvalidOperationException("Le panier est vide.");
+    }
+
+    // 2. On vérifie que le stock est suffisant pour chaque article (sécurité)
+    foreach (var item in customerOrder.OrderItems)
+    {
+        var burger = _burgerGateway.GetBurgerById(item.Burger.BurgerId);
+        if (burger == null || burger.Stock < item.Quantity)
+        {
+            throw new InvalidOperationException($"Stock insuffisant pour {item.Burger.Name}.");
+        }
+    }
+
+    // 3. On met à jour le statut et le stock dans la base de données
+    // (Note: dans une vraie application, on utiliserait une transaction ici)
+    _customerOrderGateway.FinalizeOrder(customerOrder);
+
+    // 4. On crée un nouveau panier vide pour le client
+    _customerOrderGateway.CreateCustomerOrder(customerId);
     }
 }

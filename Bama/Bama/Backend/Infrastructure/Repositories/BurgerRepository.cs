@@ -41,7 +41,7 @@ public class BurgerRepository(IConfiguration configuration) : IBurgerRepository
         using var connection = CreateConnection();
         connection.Execute(sql, new { Name = name });
     }
-    
+
     public int GetQuantityOfBurgerInOrders(int burgerId)
     {
         using var connection = CreateConnection();
@@ -50,4 +50,11 @@ public class BurgerRepository(IConfiguration configuration) : IBurgerRepository
         return quantity ?? 0;
     }
 
+    public void UpdateStock(int burgerId, int quantityToDecrement)
+    {
+        const string sql = "UPDATE Burger SET Stock = Stock - @QuantityToDecrement WHERE BurgerId = @BurgerId;";
+        using var connection = CreateConnection();
+        connection.Execute(sql, new { QuantityToDecrement = quantityToDecrement, BurgerId = burgerId });
+    }
+    
 }

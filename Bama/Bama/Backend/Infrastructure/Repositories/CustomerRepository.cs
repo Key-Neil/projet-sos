@@ -34,7 +34,7 @@ public class CustomerRepository(IConfiguration configuration) : ICustomerReposit
 
     public IEnumerable<Customer> GetAllCustomers()
     {
-        const string sql = "SELECT CustomerId, Username, PasswordHash FROM customer;";
+        const string sql = "SELECT * FROM customer WHERE Username = @Username;";
         using var connection = CreateConnection();
         return connection.Query<Customer>(sql);
     }

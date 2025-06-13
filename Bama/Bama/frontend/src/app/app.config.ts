@@ -1,6 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 // On importe 'withInterceptors'
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -11,7 +10,9 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({
+       anchorScrolling: 'enabled'
+    })),
     provideClientHydration(),
     // On dit à HttpClient d'utiliser le fetch ET nos intercepteurs
     provideHttpClient(withFetch(), withInterceptors([authInterceptor]))

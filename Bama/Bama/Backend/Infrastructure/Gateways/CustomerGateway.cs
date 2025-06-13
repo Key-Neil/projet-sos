@@ -34,7 +34,7 @@ public class CustomerGateway : ICustomerGateway
         });
     }
 
-    public string? GetCustomerPasswordHash(string username) 
+    public string? GetCustomerPasswordHash(string username)
     {
         var customer = _customerRepository.GetCustomerByUsername(username);
         return customer?.PasswordHash;
@@ -47,7 +47,28 @@ public class CustomerGateway : ICustomerGateway
         return new Core.Models.Customer
         {
             CustomerId = infraCustomer.CustomerId,
-            Username = infraCustomer.Username
+            Username = infraCustomer.Username,
+            FirstName = infraCustomer.FirstName,
+            LastName = infraCustomer.LastName,
+            Email = infraCustomer.Email,
+            PhoneNumber = infraCustomer.PhoneNumber
         };
     }
+    
+    public void UpdateCustomer(Core.Models.Customer customer)
+{
+    var infraCustomer = new Infrastructure.Models.Customer
+    {
+        CustomerId = customer.CustomerId,
+        Username = customer.Username,
+        PasswordHash = "", // Tu peux l'ignorer ici si tu ne mets pas à jour le mot de passe
+        FirstName = customer.FirstName,
+        LastName = customer.LastName,
+        Email = customer.Email,
+        PhoneNumber = customer.PhoneNumber
+    };
+
+    _customerRepository.UpdateCustomer(infraCustomer);
+}
+
 }

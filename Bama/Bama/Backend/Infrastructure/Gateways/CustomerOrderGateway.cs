@@ -17,7 +17,7 @@ public class CustomerOrderGateway : ICustomerOrderGateway
     }
 
 
-    
+
     public void AddOrUpdateItemsToCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items)
     {
         var itemsDb = items.Select(i => new Models.OrderItem
@@ -114,7 +114,17 @@ public class CustomerOrderGateway : ICustomerOrderGateway
                 }
             }
         }
-        
+
         return res;
+    }
+    
+    public void FinalizeOrder(CustomerOrder order)
+    {
+        // Dans une vraie application, on utiliserait une transaction ici pour s'assurer que tout se passe bien.
+        foreach (var item in order.OrderItems)
+        {
+            _burgerRepository.UpdateStock(item.Burger.BurgerId, item.Quantity);
+        }
+        _customerOrderRepository.UpdateOrderStatus(order.CustomerOrderId, "Completed");
     }
 }

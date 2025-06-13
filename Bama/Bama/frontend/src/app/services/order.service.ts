@@ -42,4 +42,16 @@ export class OrderService {
     // L'URL pour ajouter un item est légèrement différente
     return this.http.post(`${this.orderApiUrl}/items`, [item]);
   }
+
+   finalizeOrder(): Observable<any> {
+    // On fait un appel POST à la nouvelle route de finalisation
+    // Pas besoin d'envoyer de données, le token suffit pour que le backend sache qui est le client.
+    return this.http.post(`${this.orderApiUrl}/finalize`, {});
+  }
+
+  clearOrder(): Observable<any> {
+    // On fait un appel DELETE à la route qui gère les articles
+    return this.http.delete(`${this.orderApiUrl}/items`);
+  }
+
 }

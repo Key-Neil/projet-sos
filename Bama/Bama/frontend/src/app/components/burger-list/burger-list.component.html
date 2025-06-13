@@ -22,7 +22,7 @@
 
 <hr>
 
-<div class="cart-container" *ngIf="authService.isLoggedIn()">
+<div class="cart-container" *ngIf="authService.isLoggedIn()" id="panier-section">
   <h2>Mon Panier</h2>
 
   <div *ngIf="!order || order.orderItems.length === 0">
@@ -52,8 +52,8 @@
     <div class="cart-summary">
       <h3>Total : {{ order.totalPrice | number:'1.2-2' }} €</h3>
       <div class="cart-actions">
-        <button class="clear-button">Vider le panier</button>
-        <button class="checkout-button">Valider la commande</button>
+        <button class="clear-button" (click)="clearCart()">Vider le panier</button>
+        <button class="checkout-button" (click)="finalizeOrder()">Valider la commande</button>
       </div>
     </div>
   </div>

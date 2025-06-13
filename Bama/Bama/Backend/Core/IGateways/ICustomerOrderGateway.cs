@@ -8,5 +8,8 @@ public interface ICustomerOrderGateway
     CustomerOrder CreateCustomerOrder(int customerId);
     void AddOrUpdateItemsToCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items);
     void ClearCustomerOrder(int customerOrderId);
+
+    void FinalizeOrder(CustomerOrder order);
+    
 }
 

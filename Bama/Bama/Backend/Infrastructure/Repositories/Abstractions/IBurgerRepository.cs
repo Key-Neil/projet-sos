@@ -9,5 +9,6 @@ public interface IBurgerRepository
     void AddBurger(Burger burger);
     void DeleteBurgerByName(string name);
     int GetQuantityOfBurgerInOrders(int burgerId);
+    void UpdateStock(int burgerId, int quantityToDecrement);
 
 } 

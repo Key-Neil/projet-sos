@@ -10,8 +10,13 @@ CREATE TABLE IF NOT EXISTS Customer (
     CustomerId INT AUTO_INCREMENT PRIMARY KEY,
     -- MODIFIÉ : La taille a été réduite de 256 à 191 pour éviter l'erreur de clé trop longue.
     Username VARCHAR(191) NOT NULL UNIQUE,
-    PasswordHash TEXT NOT NULL
+    PasswordHash TEXT NOT NULL,
+    FirstName VARCHAR(100) NULL,
+    LastName VARCHAR(100) NULL,
+    Email VARCHAR(100) NULL,
+    PhoneNumber VARCHAR(20) NULL
 );
+
 
 
 -- Create Burger table if it does not exist

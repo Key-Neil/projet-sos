@@ -10,5 +10,8 @@ namespace Infrastructure.Repositories.Abstractions
         void AddItemsToCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items);
         void UpdateItemsInCustomerOrder(int customerOrderId, IEnumerable<OrderItem> items);
         void ClearCustomerOrder(int customerOrderId);
+
+        void UpdateOrderStatus(int customerOrderId, string status);
+        
     }
 }
