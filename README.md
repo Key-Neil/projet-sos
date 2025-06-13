@@ -41,7 +41,7 @@ Ce projet est une application **full stack** composée de :
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/ton-utilisateur/ton-repo.git
+git clone https://github.com/Key-Neil/projet-sos
 cd ton-repo
 ```
 
