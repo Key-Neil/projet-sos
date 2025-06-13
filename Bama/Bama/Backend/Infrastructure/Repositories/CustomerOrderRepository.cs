@@ -111,5 +111,24 @@ namespace Infrastructure.Repositories
             var sql = "UPDATE CustomerOrder SET Status = @Status WHERE CustomerOrderId = @CustomerOrderId";
             connection.Execute(sql, new { CustomerOrderId = customerOrderId, Status = status });
         }
+
+        public IEnumerable<CustomerOrder> GetAllOrdersByCustomerId(int customerId)
+        {
+            using var connection = GetConnection();
+            // On récupère toutes les commandes d'un client, les plus récentes d'abord
+            var ordersSql = "SELECT * FROM CustomerOrder WHERE CustomerId = @CustomerId ORDER BY CustomerOrderId DESC";
+            var orders = connection.Query<CustomerOrder>(ordersSql, new { CustomerId = customerId }).ToList();
+
+            // Pour chaque commande, on va chercher ses articles
+            foreach (var order in orders)
+            {
+                var orderItemSql = "SELECT * FROM OrderItem WHERE CustomerOrderId = @CustomerOrderId";
+                var orderItems = connection.Query<OrderItem>(orderItemSql, new { CustomerOrderId = order.CustomerOrderId });
+                order.OrderItems = orderItems.ToList();
+            }
+
+            return orders;
+        }
     } // Fin de la classe CustomerOrderRepository
+
 } // Fin du namespace Infrastructure.Repositories

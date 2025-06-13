@@ -16,20 +16,20 @@ public class CustomerUseCases : ICustomerUseCases
     public Customer AuthenticateAndGetCustomer(AuthenticationRequest request)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-        {            
+        {
             throw new ArgumentException("Username and password are required.", nameof(request));
         }
 
         var customer = _customerGateway.GetCustomerByUsername(request.Username);
         if (customer == null)
         {
-            throw new ArgumentException("Invalid username or password."); 
+            throw new ArgumentException("Invalid username or password.");
         }
 
-        var hashedPassword = _customerGateway.GetCustomerPasswordHash(request.Username); 
+        var hashedPassword = _customerGateway.GetCustomerPasswordHash(request.Username);
         if (string.IsNullOrEmpty(hashedPassword))
         {
-            throw new InvalidOperationException("Could not retrieve password for customer."); 
+            throw new InvalidOperationException("Could not retrieve password for customer.");
         }
 
         if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword))
@@ -61,4 +61,21 @@ public class CustomerUseCases : ICustomerUseCases
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
         _customerGateway.AddCustomer(request.Username, hashedPassword);
     }
+    
+    public Customer? GetCustomerByUsername(string username)
+{
+    if (string.IsNullOrWhiteSpace(username))
+        throw new ArgumentException("Le nom d'utilisateur est requis");
+
+    return _customerGateway.GetCustomerByUsername(username);
+}
+
+public void UpdateCustomer(Customer customer)
+{
+    if (customer == null)
+        throw new ArgumentNullException(nameof(customer));
+
+    _customerGateway.UpdateCustomer(customer);
+}
+
 }

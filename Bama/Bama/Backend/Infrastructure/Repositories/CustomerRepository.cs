@@ -38,4 +38,17 @@ public class CustomerRepository(IConfiguration configuration) : ICustomerReposit
         using var connection = CreateConnection();
         return connection.Query<Customer>(sql);
     }
+
+    public void UpdateCustomer(Customer customer)
+{
+    const string sql = @"UPDATE customer SET 
+                            FirstName = @FirstName, 
+                            LastName = @LastName, 
+                            Email = @Email, 
+                            PhoneNumber = @PhoneNumber 
+                         WHERE CustomerId = @CustomerId;";
+    using var connection = CreateConnection();
+    connection.Execute(sql, customer);
+}
+
 }

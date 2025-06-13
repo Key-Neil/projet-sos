@@ -83,30 +83,35 @@ public class CustomerOrderUseCases : ICustomerOrderUseCases
 
         return customerOrder;
     }
-   public void FinalizeOrder(int customerId)
+    public void FinalizeOrder(int customerId)
     {
-    // 1. On récupère la commande en cours
-    var customerOrder = _customerOrderGateway.GetCustomerOrderByCustomerId(customerId);
-    if (customerOrder == null || !customerOrder.OrderItems.Any())
-    {
-        throw new InvalidOperationException("Le panier est vide.");
-    }
-
-    // 2. On vérifie que le stock est suffisant pour chaque article (sécurité)
-    foreach (var item in customerOrder.OrderItems)
-    {
-        var burger = _burgerGateway.GetBurgerById(item.Burger.BurgerId);
-        if (burger == null || burger.Stock < item.Quantity)
+        // 1. On récupère la commande en cours
+        var customerOrder = _customerOrderGateway.GetCustomerOrderByCustomerId(customerId);
+        if (customerOrder == null || !customerOrder.OrderItems.Any())
         {
-            throw new InvalidOperationException($"Stock insuffisant pour {item.Burger.Name}.");
+            throw new InvalidOperationException("Le panier est vide.");
         }
+
+        // 2. On vérifie que le stock est suffisant pour chaque article (sécurité)
+        foreach (var item in customerOrder.OrderItems)
+        {
+            var burger = _burgerGateway.GetBurgerById(item.Burger.BurgerId);
+            if (burger == null || burger.Stock < item.Quantity)
+            {
+                throw new InvalidOperationException($"Stock insuffisant pour {item.Burger.Name}.");
+            }
+        }
+
+        // 3. On met à jour le statut et le stock dans la base de données
+        // (Note: dans une vraie application, on utiliserait une transaction ici)
+        _customerOrderGateway.FinalizeOrder(customerOrder);
+
+        // 4. On crée un nouveau panier vide pour le client
+        _customerOrderGateway.CreateCustomerOrder(customerId);
     }
+    public IEnumerable<CustomerOrder> GetAllOrdersByCustomerId(int customerId)
+    {
 
-    // 3. On met à jour le statut et le stock dans la base de données
-    // (Note: dans une vraie application, on utiliserait une transaction ici)
-    _customerOrderGateway.FinalizeOrder(customerOrder);
-
-    // 4. On crée un nouveau panier vide pour le client
-    _customerOrderGateway.CreateCustomerOrder(customerId);
+        return _customerOrderGateway.GetAllOrdersByCustomerId(customerId);
     }
 }

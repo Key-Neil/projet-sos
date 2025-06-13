@@ -12,6 +12,7 @@ namespace Infrastructure.Repositories.Abstractions
         void ClearCustomerOrder(int customerOrderId);
 
         void UpdateOrderStatus(int customerOrderId, string status);
-        
+
+        IEnumerable<CustomerOrder> GetAllOrdersByCustomerId(int customerId);
     }
 }

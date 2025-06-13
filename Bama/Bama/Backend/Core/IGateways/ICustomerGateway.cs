@@ -8,6 +8,5 @@ public interface ICustomerGateway
     Customer? GetCustomerByUsername(string username);
     void AddCustomer(string username, string passwordHash);
     IEnumerable<Customer> GetAllCustomers();
-    void UpdateCustomer(Customer customer);
-    
+    void UpdateCustomer(Core.Models.Customer customer); // <-- AJOUTE CETTE LIGNE    
 }

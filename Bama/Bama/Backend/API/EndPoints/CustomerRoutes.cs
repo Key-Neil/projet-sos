@@ -61,7 +61,6 @@ public static class CustomerRoutes
                     new Claim(ClaimTypes.NameIdentifier, customer.CustomerId.ToString()),
                 };
 
-
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
@@ -88,7 +87,6 @@ public static class CustomerRoutes
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status500InternalServerError);
-
 
         group.MapPost("/register", ([FromBody] RegisterRequest request, ICustomerUseCases customerUseCases) =>
         {
@@ -136,7 +134,6 @@ public static class CustomerRoutes
         .Produces(StatusCodes.Status401Unauthorized)
         .Produces(StatusCodes.Status500InternalServerError);
 
-
         group.MapDelete("me/order/items", (ICustomerOrderUseCases customerOrderUseCases, HttpContext httpContext) =>
         {
             var customerId = GetCustomerOrderByCustomerId(customerOrderUseCases, httpContext).customerId;
@@ -152,59 +149,72 @@ public static class CustomerRoutes
         .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPost("me/order/finalize", (ICustomerOrderUseCases customerOrderUseCases, HttpContext httpContext) =>
-{
-    var customerIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-    if (customerIdClaim == null || !int.TryParse(customerIdClaim.Value, out var customerId))
-    {
-        return Results.Unauthorized();
-    }
+        {
+            var customerIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (customerIdClaim == null || !int.TryParse(customerIdClaim.Value, out var customerId))
+            {
+                return Results.Unauthorized();
+            }
 
-    try
-    {
-        customerOrderUseCases.FinalizeOrder(customerId);
-        return Results.Ok(new { message = "Commande validée avec succès." });
-    }
-    catch (InvalidOperationException ex)
-    {
-        return Results.BadRequest(new { message = ex.Message });
-    }
-})
-.WithName("FinalizeMyOrder")
-.Produces(StatusCodes.Status200OK)
-.Produces(StatusCodes.Status400BadRequest)
-.Produces(StatusCodes.Status401Unauthorized);
+            try
+            {
+                customerOrderUseCases.FinalizeOrder(customerId);
+                return Results.Ok(new { message = "Commande validée avec succès." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(new { message = ex.Message });
+            }
+        })
+        .WithName("FinalizeMyOrder")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized);
 
-// Route pour récupérer les infos de l'utilisateur connecté 
-group.MapGet("me", (ICustomerUseCases customerUseCases, HttpContext httpContext) =>
-{
-    var username = httpContext.User.Identity?.Name;
-    if (string.IsNullOrEmpty(username))
-    {
-        return Results.Unauthorized();
-    }
-    var customer = customerUseCases.GetCustomerByUsername(username);
-    return customer == null ? Results.NotFound() : Results.Ok(customer);
-})
-.WithName("GetMyInfo");
+        // Route pour récupérer toutes les commandes du client connecté
+        group.MapGet("me/orders", (ICustomerOrderUseCases customerOrderUseCases, HttpContext httpContext) =>
+        {
+            var customerIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (customerIdClaim == null || !int.TryParse(customerIdClaim.Value, out var customerId))
+            {
+                return Results.Unauthorized();
+            }
 
+            var orders = customerOrderUseCases.GetAllOrdersByCustomerId(customerId);
+            return Results.Ok(orders);
+        })
+        .WithName("GetMyOrders")
+        .Produces<IEnumerable<CustomerOrder>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
-// Route pour mettre à jour les infos de l'utilisateur connecté
-group.MapPut("me", (Customer customerData, ICustomerUseCases customerUseCases, HttpContext httpContext) =>
-{
-    var customerIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-    if (customerIdClaim == null || !int.TryParse(customerIdClaim.Value, out var customerId))
-    {
-        return Results.Unauthorized();
-    }
+        // Route pour récupérer les infos de l'utilisateur connecté 
+        group.MapGet("me", (ICustomerUseCases customerUseCases, HttpContext httpContext) =>
+        {
+            var username = httpContext.User.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+            {
+                return Results.Unauthorized();
+            }
+            var customer = customerUseCases.GetCustomerByUsername(username);
+            return customer == null ? Results.NotFound() : Results.Ok(customer);
+        })
+        .WithName("GetMyInfo");
 
-    customerData.CustomerId = customerId;
-    customerUseCases.UpdateCustomer(customerData);
-    return Results.Ok(new { message = "Informations mises à jour avec succès." });
-})
-.WithName("UpdateMyInfo");
+        // Route pour mettre à jour les infos de l'utilisateur connecté
+        group.MapPut("me", (Customer customerData, ICustomerUseCases customerUseCases, HttpContext httpContext) =>
+        {
+            var customerIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (customerIdClaim == null || !int.TryParse(customerIdClaim.Value, out var customerId))
+            {
+                return Results.Unauthorized();
+            }
+
+            customerData.CustomerId = customerId;
+            customerUseCases.UpdateCustomer(customerData);
+            return Results.Ok(new { message = "Informations mises à jour avec succès." });
+        })
+        .WithName("UpdateMyInfo");
 
         return app;
     }
-
-
 }

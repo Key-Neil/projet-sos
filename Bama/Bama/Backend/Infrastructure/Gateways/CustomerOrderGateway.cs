@@ -117,7 +117,7 @@ public class CustomerOrderGateway : ICustomerOrderGateway
 
         return res;
     }
-    
+
     public void FinalizeOrder(CustomerOrder order)
     {
         // Dans une vraie application, on utiliserait une transaction ici pour s'assurer que tout se passe bien.
@@ -126,5 +126,50 @@ public class CustomerOrderGateway : ICustomerOrderGateway
             _burgerRepository.UpdateStock(item.Burger.BurgerId, item.Quantity);
         }
         _customerOrderRepository.UpdateOrderStatus(order.CustomerOrderId, "Completed");
+    }
+    public IEnumerable<CustomerOrder> GetAllOrdersByCustomerId(int customerId)
+    {
+        var customerOrdersDb = _customerOrderRepository.GetAllOrdersByCustomerId(customerId);
+        var customerOrders = new List<CustomerOrder>();
+
+        foreach (var orderDb in customerOrdersDb)
+        {
+            var order = new CustomerOrder
+            {
+                CustomerOrderId = orderDb.CustomerOrderId,
+                OrderItems = orderDb.OrderItems.Select(i =>
+                {
+                    return new OrderItem
+                    {
+                        Burger = new Burger
+                        {
+                            BurgerId = i.BurgerId,
+                        },
+                        Quantity = i.Quantity,
+                        Price = i.Price
+                    };
+                }).ToList()
+            };
+
+            foreach (var item in order.OrderItems)
+            {
+                var burger = _burgerRepository.GetBurgerById(item.Burger.BurgerId);
+                if (burger != null)
+                {
+                    item.Burger = new Burger
+                    {
+                        BurgerId = burger.BurgerId,
+                        Name = burger.Name,
+                        Description = burger.Description,
+                        Price = burger.Price,
+                        Stock = burger.Stock,
+                    };
+                }
+            }
+
+            customerOrders.Add(order);
+        }
+
+        return customerOrders;
     }
 }
